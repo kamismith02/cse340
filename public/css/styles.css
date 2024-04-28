@@ -1,6 +1,195 @@
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
+/* styles.css */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-repeat: repeat;
+}
+
+.container {
+  padding: 20px;
+  margin: 20px auto;
+}
+
+/* Header */
+#top-header {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+#top-header .siteName {
+  font-size: 40px;
+  font-weight: bold;
+}
+
+#top-header #tools {
+  float: right;
+}
+
+#top-header a {
+  color: #000;
+  text-decoration: none;
+}
+
+#top-header a:hover {
+  text-decoration: none;
+}
+
+/* Navigation */
+nav {
+  background-color: #000;
+  padding: 10px 20px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px 15px;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  padding: 20px 0;
+  text-align: left;
+  border-top: 1px solid #ddd;
+}
+
+/* Content Containers */
+#welcome-section,
+#reviews-section {
+  padding: 20px;
+  margin-bottom: 30px;
+  border-radius: 10px;
+}
+
+/* Welcome Section */
+#welcome-section {
+  text-align: center;
+}
+
+.hero {
+  position: relative;
+  display: inline-block;
+}
+
+.hero img {
+  max-width: 100%;
+}
+
+.own-today {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 10px;
+  bottom: 10px;
+  text-align: left;
+  color: #007bff;
+}
+
+.own-today h2 {
+  margin-top: 0;
+}
+
+.own-today p {
+  margin-bottom: 5px;
+}
+
+.own-today button {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.own-today img {
+  max-width: 150px;
+}
+
+/* Reviews Section */
+#reviews-section {
+  padding: 50px 0;
+}
+
+.card ul {
+  padding: 0;
+  margin: 0;
+}
+
+.card ul li {
+  margin-bottom: 20px;
+}
+
+/* Upgrade Boxes */
+.upgrade-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.upgrade-box {
+  width: calc(50% - 10px);
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.upgrade-box .box-content {
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #000;
+  width: calc(100% - 22px);
+  height: 100px;
+  margin-bottom: 5px;
+}
+
+.upgrade-box img {
+  max-width: 50%;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.upgrade-box .box-title {
+  text-decoration: underline;
+}
+
+/* Media Query*/
+@media (min-width: 768px) {
+
+  #reviews-section,
+  #upgrade-section {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  #reviews-section,
+  #upgrade-section {
+    width: calc(100% - 20px);
+  }
+
+  body {
+    background-image: url('/images/site/checkerboard.jpg');
+    background-repeat: repeat;
+  }
+
+  .container {
+    background-color: #fff;
+    border: 5px solid #007bff;
+    border-radius: 10px;
+    max-width: 800px;
+  }
 }
