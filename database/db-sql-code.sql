@@ -252,6 +252,7 @@ UPDATE public.inventory
 
 
 -- 6. Update file path in inventory table to add '/vehicles'
+-- Update file paths in inventory table
 UPDATE public.inventory
-    SET inv_image = CONCAT(SUBSTRING(inv_image FROM 1 FOR POSITION('/' IN inv_image) + 1), 'vehicles/', SUBSTRING(inv_image FROM POSITION('/' IN inv_image) + 1)),
-        inv_thumbnail = CONCAT(SUBSTRING(inv_thumbnail FROM 1 FOR POSITION('/' IN inv_thumbnail) + 1), 'vehicles/', SUBSTRING(inv_thumbnail FROM POSITION('/' IN inv_thumbnail) + 1));
+SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
+    inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
