@@ -1,5 +1,5 @@
-const invModel = require("../models/inventory-model")
-const Util = {}
+const invModel = require("../models/inventory-model");
+const Util = {};
 
 /* ************************
  * Constructs the nav HTML unordered list
@@ -28,34 +28,39 @@ Util.getNav = async function (req, res, next) {
 * Build the classification view HTML
 * ************************************ */
 Util.buildClassificationGrid = async function(data){
-  let grid
+  let grid = '<div class="vehicle-grid">';
   if(data.length > 0){
-    grid = '<ul id="inv-display">'
     data.forEach(vehicle => { 
-      grid += '<li>'
-      grid +=  '<a href="../../inv/detail/'+ vehicle.inv_id 
-      + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
-      + 'details"><img src="' + vehicle.inv_thumbnail 
-      +'" alt="Image of '+ vehicle.inv_make + ' ' + vehicle.inv_model 
-      +' on CSE Motors" /></a>'
-      grid += '<div class="namePrice">'
-      grid += '<hr />'
-      grid += '<h2>'
-      grid += '<a href="../../inv/detail/' + vehicle.inv_id +'" title="View ' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-      grid += '</h2>'
-      grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-      grid += '</div>'
-      grid += '</li>'
-    })
-    grid += '</ul>'
+      grid += '<div class="vehicle-card">';
+      grid += `<a href="../../inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">`;
+      grid += `<img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model} on CSE Motors" />`;
+      grid += '</a>';
+      grid += '<div class="namePrice">';
+      grid += `<h2><a href="../../inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">${vehicle.inv_make} ${vehicle.inv_model}</a></h2>`;
+      grid += `<span>$${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</span>`;
+      grid += '</div>'; // Close namePrice
+      grid += '</div>'; // Close vehicle-card
+    });
   } else { 
-    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>'
+    grid += '<p class="notice">Sorry, no matching vehicles could be found.</p>';
   }
-  return grid
-}
+  grid += '</div>'; // Close vehicle-grid
+  return grid;
+};
+
+// Function to format inventory detail into HTML
+Util.formatInventoryDetail = function(vehicle) {
+   let htmlContent = "<div class='vehicle-detail'>";
+  htmlContent += `<h2 class="center">${vehicle.inv_make} ${vehicle.inv_model}</h2>`;
+  htmlContent += `<img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" class="center">`;
+  htmlContent += `<p><strong>Year:</strong> ${vehicle.inv_year}</p>`;
+  htmlContent += `<p><strong>Price:</strong> $${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</p>`;
+  htmlContent += `<p><strong>Miles:</strong> ${new Intl.NumberFormat('en-US').format(vehicle.inv_miles)}</p>`;
+  htmlContent += `<p><strong>Color:</strong> ${vehicle.inv_color}</p>`;
+  htmlContent += `<p><strong>Description:</strong> ${vehicle.inv_description}</p>`;
+  htmlContent += "</div>";
+  return htmlContent;
+};
 
 /* ****************************************
  * Middleware For Handling Errors

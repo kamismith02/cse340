@@ -13,6 +13,8 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const utilities = require("./utilities/index")
+const errorRoute = require("./routes/errorRoute");
+const errorHandler = require("./routes/errorRoute");
 
 /* ***********************
  * View Engine and Templates
@@ -20,6 +22,7 @@ const utilities = require("./utilities/index")
 app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout") // not at views root
+app.use(errorHandler);
 
 /* ***********************
  * Routes
@@ -30,6 +33,9 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 
 // Inventory routes
 app.use("/inv", inventoryRoute)
+
+// Error routes
+app.use("/error", errorRoute);
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
