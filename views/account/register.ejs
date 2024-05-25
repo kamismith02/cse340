@@ -4,32 +4,32 @@
     </h1>
     <%- messages() %>
 
-    <!-- Registration Form -->
-    <form action="/account/register" method="post">
-        <div class="form-group">
-            <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" required>
-        </div>
-        <div class="form-group">
-            <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" minlength="12" required>
-            <div class="password-requirements">
-                Password must be at least 12 characters long and contain at least:
-                <ul>
-                    <li>1 capital letter</li>
-                    <li>1 number</li>
-                    <li>1 special character</li>
-                </ul>
+        <!-- Registration Form -->
+        <form action="/account/register" method="post">
+            <div class="form-group">
+                <label for="account_firstname">First Name:</label>
+                <input type="text" id="account_firstname" name="account_firstname" required>
             </div>
-        </div>
-        <button type="submit">Register</button>
-    </form>
+            <div class="form-group">
+                <label for="account_lastname">Last Name:</label>
+                <input type="text" id="account_lastname" name="account_lastname" required>
+            </div>
+            <div class="form-group">
+                <label for="account_email">Email:</label>
+                <input type="email" id="account_email" name="account_email" required>
+            </div>
+            <div class="form-group">
+                <label for="account_password">Password:</label>
+                <input type="password" id="account_password" name="account_password" minlength="12" required>
+                <div class="password-requirements">
+                    Password must be at least 12 characters long and contain at least:
+                    <ul>
+                        <li>1 capital letter</li>
+                        <li>1 number</li>
+                        <li>1 special character</li>
+                    </ul>
+                </div>
+            </div>
+            <button type="submit">Register</button>
+        </form>
 </div>
