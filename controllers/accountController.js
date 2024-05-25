@@ -16,15 +16,12 @@ async function buildLogin(req, res, next) {
 *  Deliver registration view
 * *************************************** */
 async function buildRegister(req, res, next) {
-  try {
-    let nav = await utilities.getNav();
-    res.render("account/register", {
-      title: "Register",
-      nav,
-    });
-  } catch (error) {
-    next(error);
-  }
+  let nav = await utilities.getNav()
+  res.render("account/register", {
+    title: "Register",
+    nav,
+    errors: null,
+  })
 }
 
 /* ****************************************

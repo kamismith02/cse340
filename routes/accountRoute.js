@@ -3,6 +3,7 @@ const express = require("express")
 const router = new express.Router() 
 const accountController = require("../controllers/accountController")
 const utilities = require("../utilities/index");
+const regValidate = require('../utilities/account-validation')
 
 router.get('/login', utilities.handleErrors(accountController.buildLogin));
 
@@ -13,6 +14,12 @@ router.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!');
 });
 
-router.post('/register', utilities.handleErrors(accountController.registerAccount))
+// Process the registration data
+router.post(
+  "/register",
+  regValidate.registationRules(),
+  regValidate.checkRegData,
+  utilities.handleErrors(accountController.registerAccount)
+)
 
 module.exports = router;
