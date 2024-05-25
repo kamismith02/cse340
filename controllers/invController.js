@@ -3,6 +3,26 @@ const utilities = require("../utilities/")
 
 const invCont = {}
 
+// Function to render the inventory management view
+invCont.renderManagementView = async function (req, res, next) {
+    try {
+        let nav = await utilities.getNav();
+        // Check if there's any flash message
+        const flashMessage = req.flash("message");
+        let messages = [];
+        if (flashMessage.length > 0) {
+            messages.push({ type: "success", text: flashMessage[0] });
+        }
+        res.render("./inventory/management", {
+            title: "Inventory Management",
+            messages: messages, // Pass flash messages to the view
+            nav,
+        });
+    } catch (error) {
+        next(error); // Pass error to error handling middleware
+    }
+};
+
 /* ***************************
  *  Build inventory by classification view
  * ************************** */
@@ -42,5 +62,49 @@ invCont.showInventoryDetail = async function(req, res, next) {
     next(error);
   }
 };
+
+invCont.renderAddClassificationView = async function (req, res, next) {
+    try {
+        let nav = await utilities.getNav()
+        const flashMessage = req.flash("message");
+        let messages = [];
+        if (flashMessage.length > 0) {
+            messages.push({ type: "success", text: flashMessage[0] });
+        }
+        res.render("./inventory/add-classification", {
+            title: "Add New Classification",
+            messages: messages,
+            nav,
+            errors: [],
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Function to handle adding a new classification
+invCont.addClassification = async function (req, res, next) {
+    try {
+        const { classification_name } = req.body;
+        // Server-side validation
+        if (!classification_name || classification_name.includes(" ") || /[^a-zA-Z0-9]/.test(classification_name)) {
+            req.flash("message", "Classification name cannot contain spaces or special characters.");
+            res.redirect("/inv/add-classification");
+            return;
+        }
+        // Insert new classification into the database
+        await invModel.addClassification(classification_name);
+
+        // Flash success message
+        req.flash("message", "New classification added successfully.");
+
+        // Redirect to the management view
+        res.redirect("/inv");
+    } catch (error) {
+        req.flash("error", "Failed to add new classification.");
+        res.redirect("/inv/add-classification");
+    }
+};
+
 
 module.exports = invCont

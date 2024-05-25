@@ -1,0 +1,17 @@
+<div class="container">
+    <h1>Inventory Management</h1>
+    <h2>Welcome to the Inventory Management View</h2>
+    <!-- Display flash message if available -->
+    <% if (messages && messages.length> 0) { %>
+        <% messages.forEach(message=> { %>
+            <div class="alert alert-<%= message.type %>">
+                <%= message.text %>
+            </div>
+            <% }) %>
+                <% } %>
+            <!-- Links to trigger add new classification and add new inventory -->
+            <div>
+                <a href="/inv/add-classification">Add New Classification</a>
+                <a href="/inv/add-inventory">Add New Inventory</a>
+            </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="container">
+    <h1>Add New Classification</h1>
+    <% if (messages.length> 0) { %>
+        <% messages.forEach(message=> { %>
+            <div class="alert alert-<%= message.type %>">
+                <%= message.text %>
+            </div>
+            <% }) %>
+                <% } %>
+                    <% if (errors.length> 0) { %>
+                        <div class="alert alert-danger">
+                            <% errors.forEach(error=> { %>
+                                <p>
+                                    <%= error.msg %>
+                                </p>
+                                <% }) %>
+                        </div>
+                        <% } %>
+                            <form id="addClassificationForm" action="/inv/add-classification" method="post">
+                                <div class="form-group">
+                                    <label for="classification-name">Classification Name:</label>
+                                    <input type="text" id="classification-name" name="classification_name" required>
+                                    <small class="form-text text-muted">Classification name cannot contain spaces or
+                                        special characters.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Classification</button>
+                            </form>
+</div>
