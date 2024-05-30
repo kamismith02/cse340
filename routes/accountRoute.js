@@ -10,6 +10,8 @@ router.get('/login', utilities.handleErrors(accountController.buildLogin));
 
 router.get('/register', utilities.handleErrors(accountController.buildRegister));
 
+router.get("/", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountManagement));
+
 router.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
@@ -23,24 +25,12 @@ router.post(
   utilities.handleErrors(accountController.registerAccount)
 )
 
-// Process the login attempt
+// Process the login request
 router.post(
   "/login",
-  loginValidate.loginRules(),
-  loginValidate.checkLoginData,
-  (req, res, next) => {
-    // Render the login view with errors if validation fails
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.render("account/login", {
-        title: "Login",
-        errors: errors.array(),
-      });
-    }
-    // Continue to the next middleware if validation passes
-    next();
-  },
-  utilities.handleErrors(accountController.loginAttempt)
+  regValidate.loginRules(),
+  regValidate.checkLoginData,
+  utilities.handleErrors(accountController.accountLogin)
 );
 
 
