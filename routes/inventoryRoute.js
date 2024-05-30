@@ -24,4 +24,6 @@ router.get("/add-inventory", invController.renderAddInventoryView);
 // Route to handle adding a new vehicle
 router.post("/add-inventory", invController.addInventory);
 
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
 module.exports = router;

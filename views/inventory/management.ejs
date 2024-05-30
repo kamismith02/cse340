@@ -1,4 +1,4 @@
-<div class="container">
+<div class="inventory-management-container">
     <h1>Inventory Management</h1>
     <h2>Welcome to the Inventory Management View</h2>
     <!-- Display flash message if available -->
@@ -10,8 +10,17 @@
             <% }) %>
                 <% } %>
             <!-- Links to trigger add new classification and add new inventory -->
-            <div>
+            <div id="link-container">
                 <a href="/inv/add-classification">Add New Classification</a>
                 <a href="/inv/add-inventory">Add New Inventory</a>
             </div>
+            <h2>Manage Inventory</h2>
+            <p>Select a classification from the list below to see the items belonging to the classification.</p>
+            <!-- Display classification list -->
+            <%- classificationList %>
+            <!-- Table to display inventory items -->
+            <table id="inventoryDisplay"></table>
+            <!-- Display message if JavaScript is disabled -->
+            <noscript>JavaScript must be enabled to use this page.</noscript>
+            <script src="../../js/inventory.js"></script>
 </div>

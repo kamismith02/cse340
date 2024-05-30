@@ -58,10 +58,12 @@ invCont.renderManagementView = async function (req, res, next) {
         if (flashMessage.length > 0) {
             messages.push({ type: "success", text: flashMessage[0] });
         }
+        const classificationList = await utilities.buildClassificationList();
         res.render("./inventory/management", {
             title: "Inventory Management",
             messages: messages, // Pass flash messages to the view
             nav,
+            classificationList: classificationList,
         });
     } catch (error) {
         next(error); // Pass error to error handling middleware
@@ -160,5 +162,18 @@ invCont.addInventory = async function (req, res, next) {
         res.redirect("/inv/add-inventory");
     }
 };
+
+/* ***************************
+ *  Return Inventory by Classification As JSON
+ * ************************** */
+invCont.getInventoryJSON = async (req, res, next) => {
+  const classification_id = parseInt(req.params.classification_id)
+  const invData = await invModel.getInventoryByClassificationId(classification_id)
+  if (invData[0].inv_id) {
+    return res.json(invData)
+  } else {
+    next(new Error("No data returned"))
+  }
+}
 
 module.exports = invCont

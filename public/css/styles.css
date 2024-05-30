@@ -356,3 +356,86 @@ footer {
 .register-link:hover {
   text-decoration: underline;
 }
+
+#inventory-management-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Style for headings */
+#inventory-management-container h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+#inventory-management-container h2 {
+  font-size: 20px;
+  margin-top: 20px;
+}
+
+/* Style for flash messages */
+#inventory-management-container .alert {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+#inventory-management-container .alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+#inventory-management-container .alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+/* Style for links */
+#inventory-management-container a {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+/* Style for the table */
+#inventory-management-container table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  margin-top: 20px;
+}
+
+#inventory-management-container table th,
+#inventory-management-container table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style for table header */
+#inventory-management-container table th {
+  background-color: #f2f2f2;
+}
+
+/* Style for link container */
+#link-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+/* Style for links */
+#link-container a {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+/* Style for link hover effect */
+#link-container a:hover {
+  background-color: #0056b3;
+}
