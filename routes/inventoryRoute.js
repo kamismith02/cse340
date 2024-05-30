@@ -18,4 +18,10 @@ router.get("/add-classification", invController.renderAddClassificationView);
 // Route to handle adding a new classification
 router.post("/add-classification", invController.addClassification);
 
+// Route to render the add inventory view
+router.get("/add-inventory", invController.renderAddInventoryView);
+
+// Route to handle adding a new vehicle
+router.post("/add-inventory", invController.addInventory);
+
 module.exports = router;
