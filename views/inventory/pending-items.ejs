@@ -1,0 +1,56 @@
+<% if (messages.length> 0) { %>
+    <% messages.forEach(message=> { %>
+        <div class="alert alert-<%= message.type %>">
+            <%= message.text %>
+        </div>
+    <% }) %>
+<% } %>
+
+<% if (errors.length> 0) { %>
+    <% errors.forEach(error=> { %>
+        <div class="alert alert-danger">
+            <%= error %>
+        </div>
+    <% }) %>
+<% } %>
+
+<h1>Pending Classifications</h1>
+    <ul>
+        <% pendingClassifications.forEach(classification=> { %>
+            <li>
+                <%= classification.classification_name %>
+                    <form action="/inv/approve-classification/<%= classification.classification_id %>" method="post"
+                        style="display:inline;">
+                        <button type="submit" class="pending">Approve</button>
+                        <input type="hidden" name="account_id" <% if(locals.account_id) { %> value="<%= locals.account_id %>"
+                            <% } %>>
+                    </form>
+                    <form action="/inv/reject-classification/<%= classification.classification_id %>" method="post"
+                        style="display:inline;">
+                        <button type="submit" class="pending">Reject</button>
+                        <input type="hidden" name="account_id" <% if(locals.account_id) { %> value="<%= locals.account_id %>"
+                            <% } %>>
+                    </form>
+            </li>
+            <% }) %>
+    </ul>
+
+    <h1>Pending Inventory Items</h1>
+    <ul>
+        <% pendingInventoryItems.forEach(item=> { %>
+            <li>
+                <%= item.inv_make %>
+                    <%= item.inv_model %>
+                        <form action="/inv/approve-inventory/<%= item.inv_id %>" method="post" style="display:inline;">
+                            <button type="submit" class="pending">Approve</button>
+                            <input type="hidden" name="account_id" <% if(locals.account_id) { %> value="<%= locals.account_id %>"
+                                <% } %>>
+                        </form>
+                        <form action="/inv/reject-inventory/<%= item.inv_id %>" method="post" style="display:inline;">
+                            <button type="submit" class="pending">Reject</button>
+                            <input type="hidden" name="account_id" <% if(locals.account_id) { %> value="<%= locals.account_id %>"
+                                <% } %>>
+                        </form>
+            </li>
+            <% }) %>
+    </ul>

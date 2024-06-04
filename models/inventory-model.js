@@ -2,7 +2,7 @@ const pool = require("../database/");
 
 // Get all classification data
 async function getClassifications() {
-  return await pool.query("SELECT * FROM public.classification ORDER BY classification_name");
+  return await pool.query("SELECT * FROM public.classification WHERE classification_approved = true ORDER BY classification_name");
 }
 
 // Get all inventory items and classification_name by classification_id
@@ -12,7 +12,9 @@ async function getInventoryByClassificationId(classification_id) {
       `SELECT * FROM public.inventory AS i 
       JOIN public.classification AS c 
       ON i.classification_id = c.classification_id 
-      WHERE i.classification_id = $1`,
+      WHERE i.classification_id = $1 
+      AND c.classification_approved = true
+      AND i.inv_approved = true`,
       [classification_id]
     );
     return data.rows;
@@ -106,4 +108,121 @@ async function deleteInventoryItem(inv_id) {
   }
 }
 
-module.exports = { getClassifications, getInventoryByClassificationId, getInventoryItemById, addClassification, addInventory, updateInventory, deleteInventoryItem };
+// Method to get pending classifications
+async function getPendingClassifications() {
+    try {
+        const sql = `
+            SELECT * FROM classification
+            WHERE classification_approved = false
+        `;
+        const result = await pool.query(sql);
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Method to get pending inventory items
+async function getPendingInventoryItems() {
+    try {
+        const sql = `
+            SELECT * FROM inventory
+            WHERE inv_approved = false
+        `;
+        const result = await pool.query(sql);
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function approveClassification(classification_id, account_id) {
+    try {
+        const sql = `
+            UPDATE classification
+            SET classification_approved = true, account_id = $1, approval_date = NOW()
+            WHERE classification_id = $2
+        `;
+        const result = await pool.query(sql, [account_id, classification_id]);
+        // Check if the update was successful by checking the row count
+        if (result.rowCount > 0) {
+            return { success: true };
+        } else {
+            return { success: false };
+        }
+    } catch (error) {
+        // Log the error for debugging purposes
+        console.error("Error in approveClassification:", error);
+        throw error;
+    }
+}
+
+async function rejectClassification(classification_id) {
+    try {
+        const sql = `
+            DELETE FROM classification
+            WHERE classification_id = $1
+        `;
+        const result = await pool.query(sql, [classification_id]);
+        // Check if the update was successful by checking the row count
+        if (result.rowCount > 0) {
+            return { success: true };
+        } else {
+            return { success: false };
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function approveInventoryItem(inv_id, account_id) {
+    try {
+        const sql = `
+            UPDATE inventory
+            SET inv_approved = true, account_id = $1, approval_date = NOW()
+            WHERE inv_id = $2
+        `;
+        const result = await pool.query(sql, [account_id, inv_id]);
+        // Check if the update was successful by checking the row count
+        if (result.rowCount > 0) {
+            return { success: true };
+        } else {
+            return { success: false };
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function rejectInventoryItem(inv_id) {
+    try {
+        const sql = `
+            DELETE FROM inventory
+            WHERE inv_id = $1
+        `;
+        const result = await pool.query(sql, [inv_id]);
+        // Check if the update was successful by checking the row count
+        if (result.rowCount > 0) {
+            return { success: true };
+        } else {
+            return { success: false };
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+module.exports = { 
+  getClassifications, 
+  getInventoryByClassificationId, 
+  getInventoryItemById, 
+  addClassification, 
+  addInventory, 
+  updateInventory, 
+  deleteInventoryItem, 
+  getPendingClassifications, 
+  getPendingInventoryItems, 
+  approveClassification, 
+  rejectClassification, 
+  approveInventoryItem, 
+  rejectInventoryItem };

@@ -256,3 +256,16 @@ UPDATE public.inventory
 UPDATE public.inventory
 SET inv_image = REPLACE(inv_image, '/images/', '/images/vehicles/'),
     inv_thumbnail = REPLACE(inv_thumbnail, '/images/', '/images/vehicles/');
+
+
+-- Adding columns to the inventory table
+ALTER TABLE inventory
+ADD COLUMN inv_approved BOOLEAN DEFAULT FALSE,
+ADD COLUMN account_id INT,
+ADD COLUMN approval_date TIMESTAMP;
+
+-- Adding columns to the classifications table
+ALTER TABLE classifications
+ADD COLUMN classification_approved BOOLEAN DEFAULT FALSE,
+ADD COLUMN account_id INT,
+ADD COLUMN approval_date TIMESTAMP;

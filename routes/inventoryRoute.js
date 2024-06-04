@@ -37,4 +37,14 @@ router.get('/delete/:inv_id', requireAdminOrEmployee, utilities.handleErrors(inv
 
 router.post("/delete/:inv_id", requireAdminOrEmployee, utilities.handleErrors(invController.deleteInventory));
 
+router.get('/pending-items', requireAdminOrEmployee, utilities.handleErrors(invController.renderPendingItemsView));
+
+// Routes to approve/reject classifications
+router.post('/approve-classification/:classification_id', requireAdminOrEmployee, invController.approveClassification);
+router.post('/reject-classification/:classification_id', requireAdminOrEmployee, invController.rejectClassification);
+
+// Routes to approve/reject inventory items
+router.post('/approve-inventory/:inv_id', requireAdminOrEmployee, invController.approveInventory);
+router.post('/reject-inventory/:inv_id', requireAdminOrEmployee, invController.rejectInventory);
+
 module.exports = router;

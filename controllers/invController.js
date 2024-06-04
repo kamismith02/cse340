@@ -11,20 +11,41 @@ const invCont = {}
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
   try {
-    const classification_id = req.params.classificationId
-    const data = await invModel.getInventoryByClassificationId(classification_id)
-    const grid = await utilities.buildClassificationGrid(data)
-    let nav = await utilities.getNav()
-    const className = data[0].classification_name
-    res.render("./inventory/classification", {
-        title: className + " vehicles",
-        nav,
-        grid,
-  })
-} catch (error) {
-      next(error); // Pass error to error handling middleware
+    const classification_id = req.params.classificationId;
+    
+    // Get inventory items by classification ID
+    const data = await invModel.getInventoryByClassificationId(classification_id);
+
+    // Check if data is not empty
+    if (data && data.length > 0) {
+      // Build classification grid
+      const grid = await utilities.buildClassificationGrid(data);
+      
+      // Get navigation menu
+      let nav = await utilities.getNav();
+      
+      // Get classification name from the first item in the data array
+      const className = data[0].classification_name;
+      
+      // Render the classification view with the retrieved data
+      res.render("./inventory/classification", {
+          title: `${className} vehicles`,
+          nav,
+          grid,
+      });
+    } else {
+      let nav = await utilities.getNav();
+      // If no inventory items found, render an appropriate message
+      res.render("errors/error", {
+          title: "Error",
+          nav,
+          message: "No inventory items found for this classification.",
+      });
     }
-}
+  } catch (error) {
+    next(error); // Pass error to error handling middleware
+  }
+};
 
 // Controller function to show inventory item detail
 invCont.showInventoryDetail = async function(req, res, next) {
@@ -103,10 +124,10 @@ invCont.addClassification = async function (req, res, next) {
             return;
         }
         // Insert new classification into the database
-        await invModel.addClassification(classification_name);
+        await invModel.addClassification({classification_name, approved: false});
 
         // Flash success message
-        req.flash("message", "New classification added successfully.");
+        req.flash("message", "New classification added successfully. Pending approval.");
 
         // Redirect to the management view
         res.redirect("/inv");
@@ -150,10 +171,10 @@ invCont.addInventory = async function (req, res, next) {
         const inv_thumbnail = defaultThumbnailPath;
 
         // Insert inventory item into the database
-        await invModel.addInventory(inv_make, inv_model, inv_year, classification_id, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail);
+        await invModel.addInventory({inv_make, inv_model, inv_year, classification_id, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail, approved: false});
 
         // Flash success message
-        req.flash("message", "New inventory item added successfully.");
+        req.flash("message", "New inventory item added successfully. Pending approval.");
 
         // Redirect to the management view
         res.redirect("/inv");
@@ -311,6 +332,141 @@ invCont.deleteInventory = async function (req, res, next) {
   } catch (error) {
       next(error);
   }
+};
+
+/* ***************************
+ *  Pending Item Approval View
+ * ************************** */
+invCont.renderPendingItemsView = async function (req, res, next) {
+    try {
+        let nav = await utilities.getNav();
+        const flashMessage = req.flash("message");
+        const errors = req.flash("error");
+        const messages = flashMessage.map(message => ({ type: "success", text: message }));
+
+        const pendingClassifications = await invModel.getPendingClassifications();
+        console.log("Pending Classifications fetched:", pendingClassifications);
+
+        const pendingInventoryItems = await invModel.getPendingInventoryItems();
+        console.log("Pending Inventory Items fetched:", pendingInventoryItems);
+
+        res.render("./inventory/pending-items", {
+            title: "Pending Items",
+            nav,
+            messages: messages,
+            errors: errors,
+            pendingClassifications: pendingClassifications,
+            pendingInventoryItems: pendingInventoryItems
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* ***************************
+ *  Approval of Classification Data
+ * ************************** */
+invCont.approveClassification = async function(req, res, next) {
+    try {
+        const classification_id = parseInt(req.params.classification_id);
+        const account_id = req.user.account_id
+        
+        if (isNaN(classification_id) || isNaN(account_id)) {
+            throw new Error('Invalid classification_id or account_id');
+        }
+
+        // Attempt to approve the classification
+        const result = await invModel.approveClassification(classification_id, account_id);
+        
+        if (result.success) {
+            req.flash('message', 'Classification approved successfully.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        } else {
+            req.flash('error', 'Failed to approve classification.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        }
+    } catch (error) {
+        next(error); // Let the error-handling middleware handle the error
+    }
+};
+
+
+// Controller function to reject a classification
+invCont.rejectClassification = async function(req, res, next) {
+    try {
+        const classification_id = parseInt(req.params.classification_id);
+        const account_id = req.user.account_id
+        
+        if (isNaN(classification_id) || isNaN(account_id)) {
+            throw new Error('Invalid classification_id or account_id');
+        }
+        
+        // Attempt to reject the classification
+        const result = await invModel.rejectClassification(classification_id);
+        
+        if (result.success) {
+            req.flash('message', 'Classification rejected successfully.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        } else {
+            req.flash('error', 'Failed to reject classification.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        }
+    } catch (error) {
+        next(error); // Let the error-handling middleware handle the error
+    }
+};
+
+
+/* ***************************
+ *  Approval of Inventory Data
+ * ************************** */
+invCont.approveInventory = async function(req, res, next) {
+    try {
+        const inv_id = parseInt(req.params.inv_id);
+        const account_id = req.user.account_id
+        
+        if (isNaN(inv_id) || isNaN(account_id)) {
+            throw new Error('Invalid inv_id or account_id');
+        }
+        
+        // Attempt to approve the inventory item
+        const result = await invModel.approveInventoryItem(inv_id, account_id);
+        
+        if (result.success) {
+            req.flash('message', 'Inventory item approved successfully.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        } else {
+            req.flash('error', 'Failed to approve inventory item.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        }
+    } catch (error) {
+        next(error); // Let the error-handling middleware handle the error
+    }
+};
+
+// Controller function to reject an inventory item
+invCont.rejectInventory = async function(req, res, next) {
+    try {
+        const inv_id = parseInt(req.params.inv_id);
+        const account_id = req.user.account_id
+        
+        if (isNaN(inv_id) || isNaN(account_id)) {
+            throw new Error('Invalid inv_id or account_id');
+        }
+        
+        // Attempt to reject the inventory item
+        const result = await invModel.rejectInventoryItem(inv_id);
+        
+        if (result.success) {
+            req.flash('message', 'Inventory item rejected successfully.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        } else {
+            req.flash('error', 'Failed to reject inventory item.');
+            return res.redirect('/inv/pending-items'); // Return to ensure no further execution
+        }
+    } catch (error) {
+        next(error); // Let the error-handling middleware handle the error
+    }
 };
 
 module.exports = invCont
