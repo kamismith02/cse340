@@ -1,0 +1,60 @@
+<div class="container">
+    <h1>
+        <%= title %>
+    </h1>
+
+    <% if (messages && messages.length> 0) { %>
+        <ul class="notice">
+            <% messages.forEach(function(message) { %>
+                <li class="<%= message.type %>">
+                    <%= message.text %>
+                </li>
+                <% }) %>
+        </ul>
+        <% } %>
+
+    <% if (errors && errors.length> 0) { %>
+        <ul class="notice">
+            <% errors.forEach(function(error) { %>
+                <li>
+                    <%= error.msg %>
+                </li>
+                <% }) %>
+        </ul>
+        <% } %>
+
+    <!-- Form for Account Update -->
+    <form class="form-group" action="/account/update/<%= account.account_id %>" method="POST">
+        <h2>Account Update</h2>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="account_firstname" name="account_firstname" value="<%= account.account_firstname %>" required>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="account_lastname" name="account_lastname" value="<%= account.account_lastname %>" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="account_email" name="account_email" value="<%= account.account_email %>" required>
+
+        <button type="submit">Update Account</button>
+        <input type="hidden" id="account_id" name="account_id" value="<%= account.account_id %>">
+    </form>
+
+    <!-- Form for Change Password -->
+    <form class="form-group" action="/account/change-password/<%= account.account_id %>" method="POST">
+        <h2>Change Password</h2>
+        <label for="currentPassword">Current Password:</label>
+        <input type="password" id="currentPassword" name="currentPassword" required>
+
+        <label for="newPassword">New Password:</label>
+        <span>Must be at least 12 characters and contain at least 1 number, 1 capital letter and 1 special
+            character</span>
+        <input type="password" id="newPassword" name="newPassword" required
+            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{12,}$">
+
+        <label for="confirmPassword">Confirm New Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+        <button type="submit">Change Password</button>
+        <input type="hidden" id="account_id" name="account_id" value="<%= account.account_id %>">
+    </form>
+</div>

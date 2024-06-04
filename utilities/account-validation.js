@@ -1,6 +1,8 @@
 const utilities = require(".")
 const accountModel = require("../models/account-model")
 const { body, validationResult } = require("express-validator")
+const jwt = require('jsonwebtoken');
+const { getAccountById } = require('../models/account-model');
 const validate = {}
 
 /*  **********************************
@@ -113,5 +115,36 @@ validate.checkLoginData = async (req, res, next) => {
   }
   next()
 }
+
+validate.requireAdminOrEmployee = async (req, res, next) => {
+    try {
+        const token = req.cookies.jwt;
+
+        // Verify JWT token
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+        // Get user ID from decoded token
+        const account_id = decoded.account_id;
+
+        // Fetch user from database using user ID
+        const user = await getAccountById(account_id);
+
+
+        // Check if user exists and has admin or employee role
+        if (!user || (user.account_type !== 'Admin' && user.account_type !== 'Employee')) {
+            console.log('Unauthorized');
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        // Attach user object to request for future use
+        req.user = user;
+
+        // Proceed to next middleware or route handler
+        next();
+    } catch (error) {
+        console.error('Authorization Error:', error);
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+};
 
 module.exports = validate

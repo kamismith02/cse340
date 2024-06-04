@@ -319,6 +319,7 @@ footer {
 .form-group label {
   display: block;
   margin-bottom: 5px;
+  margin-top: 10px;
 }
 
 /* Input styling */
@@ -331,9 +332,10 @@ footer {
 }
 
 /* Button styling */
-.login-button {
+.login-button, button {
   width: 100%;
   padding: 12px;
+  margin-top: 10px;
   background-color: #007BFF;
   color: white;
   border: none;

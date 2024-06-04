@@ -119,12 +119,19 @@ Util.checkJWTToken = (req, res, next) => {
  *  Check Login
  * ************************************ */
  Util.checkLogin = (req, res, next) => {
-  if (res.locals.loggedin) {
+  if (res.locals.loggedIn) {
     next()
   } else {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
  }
+
+ Util.checkAuthentication = (req, res, next) => {
+  res.locals.loggedIn = req.session.loggedIn || false;
+  res.locals.accountData = req.session.accountData || {};
+  next();
+}
+ 
 
 module.exports = Util
